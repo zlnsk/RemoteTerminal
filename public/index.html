@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<meta name="color-scheme" content="dark" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Remote Terminal</title>
+<link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e1e2e'/%3E%3Cpath d='M14 22 L28 32 L14 42' stroke='%2389b4fa' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='32' y1='44' x2='50' y2='44' stroke='%23b4befe' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/Remote/Terminal/vendor/xterm/css/xterm.css" />
+<link rel="stylesheet" href="/Remote/Terminal/styles.css" />
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
+        <path d="M6 10 L14 16 L6 22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="16" y1="23" x2="26" y2="23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span>Remote Terminal</span>
+    </div>
+
+    <nav class="targets" id="targets" aria-label="SSH targets"></nav>
+
+    <div class="actions">
+      <button class="btn" id="btn-paste" title="Paste (Cmd/Ctrl+V)">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        <span>Paste</span>
+      </button>
+      <button class="btn" id="btn-copy" title="Copy selection">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy</span>
+      </button>
+      <div class="divider"></div>
+      <button class="btn icon" id="btn-font-minus" title="Smaller font">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="btn icon" id="btn-font-plus" title="Larger font">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
+      </button>
+      <button class="btn icon" id="btn-search" title="Search (Cmd/Ctrl+F)">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="search" id="search" hidden>
+    <input type="text" id="search-input" placeholder="Search in terminal…" />
+    <button class="btn icon" id="search-prev" title="Previous">↑</button>
+    <button class="btn icon" id="search-next" title="Next">↓</button>
+    <button class="btn icon" id="search-close" title="Close">✕</button>
+  </div>
+
+  <main class="term-wrap">
+    <div id="terminal" class="term"></div>
+    <div class="overlay" id="overlay">
+      <div class="overlay-card">
+        <div class="overlay-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+        </div>
+        <div class="overlay-title" id="overlay-title">Connecting…</div>
+        <div class="overlay-sub" id="overlay-sub">Establishing SSH session</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="status">
+    <span class="dot" id="status-dot"></span>
+    <span id="status-text">idle</span>
+    <span class="sep">·</span>
+    <span id="status-target">no target</span>
+    <span class="sep">·</span>
+    <span id="status-size">—</span>
+    <span class="grow"></span>
+  </footer>
+</div>
+
+<script src="/Remote/Terminal/vendor/xterm/lib/xterm.js"></script>
+<script src="/Remote/Terminal/vendor/addon-fit/lib/addon-fit.js"></script>
+<script src="/Remote/Terminal/vendor/addon-web-links/lib/addon-web-links.js"></script>
+<script src="/Remote/Terminal/vendor/addon-webgl/lib/addon-webgl.js"></script>
+<script src="/Remote/Terminal/vendor/addon-unicode11/lib/addon-unicode11.js"></script>
+<script src="/Remote/Terminal/vendor/addon-search/lib/addon-search.js"></script>
+<script src="/Remote/Terminal/vendor/addon-clipboard/lib/addon-clipboard.js"></script>
+<script src="/Remote/Terminal/app.js"></script>
+</body>
+</html>

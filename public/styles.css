@@ -1,0 +1,270 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --crust: #11111b;
+  --surface0: #313244;
+  --surface1: #45475a;
+  --surface2: #585b70;
+  --overlay0: #6c7086;
+  --overlay1: #7f849c;
+  --text: #cdd6f4;
+  --subtext: #a6adc8;
+  --blue: #89b4fa;
+  --lavender: #b4befe;
+  --sapphire: #74c7ec;
+  --green: #a6e3a1;
+  --red: #f38ba8;
+  --yellow: #f9e2af;
+  --mauve: #cba6f7;
+  --accent: var(--blue);
+  --accent-soft: color-mix(in oklab, var(--accent) 22%, transparent);
+  --border: color-mix(in oklab, var(--surface2) 70%, transparent);
+  --radius: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background:
+    radial-gradient(1200px 800px at 20% -10%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%),
+    radial-gradient(900px 700px at 120% 110%, color-mix(in oklab, var(--mauve) 8%, transparent), transparent 55%),
+    var(--crust);
+  color: var(--text);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+}
+.app > .bar,
+.app > .search,
+.app > .status { flex: 0 0 auto; }
+.app > .term-wrap { flex: 1 1 0; min-height: 0; }
+
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--base) 92%, transparent), color-mix(in oklab, var(--mantle) 88%, transparent));
+  backdrop-filter: saturate(150%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--lavender);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  user-select: none;
+}
+.brand span { color: var(--text); }
+
+.targets {
+  display: flex;
+  gap: 6px;
+  flex: 0 1 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.targets::-webkit-scrollbar { display: none; }
+.target-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface0) 65%, transparent);
+  color: var(--subtext);
+  font: 500 12.5px/1 "Inter", sans-serif;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.target-btn:hover { color: var(--text); background: var(--surface0); }
+.target-btn.active {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: color-mix(in oklab, var(--accent) 60%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent) inset;
+}
+.target-btn .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--overlay0);
+  box-shadow: 0 0 0 0 transparent;
+}
+.target-btn.active .pulse { background: var(--green); box-shadow: 0 0 0 3px color-mix(in oklab, var(--green) 22%, transparent); }
+.target-btn.connecting .pulse { background: var(--yellow); animation: pulse 1.2s ease-in-out infinite; }
+.target-btn.error .pulse { background: var(--red); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  align-items: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--subtext);
+  font: 500 12px/1 "Inter", sans-serif;
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+.btn:hover { color: var(--text); background: var(--surface0); border-color: var(--surface2); }
+.btn:active { transform: translateY(1px); }
+.btn.icon { padding: 7px; }
+.divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+
+.search[hidden] { display: none !important; }
+.search {
+  display: flex;
+  gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--mantle) 85%, transparent);
+}
+.search input {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--base);
+  color: var(--text);
+  font: 400 13px/1.2 "JetBrains Mono", ui-monospace, monospace;
+  outline: none;
+}
+.search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+
+.term-wrap {
+  position: relative;
+  padding: 10px 14px;
+  overflow: hidden;
+  display: flex;
+  min-height: 0;
+}
+.term {
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--base);
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--surface0) 50%, transparent),
+    0 12px 30px -20px rgba(0,0,0,0.6);
+}
+.term .xterm { padding: 10px 12px; height: 100%; }
+.term .xterm-viewport { background: transparent !important; }
+.term .xterm-viewport::-webkit-scrollbar { width: 10px; }
+.term .xterm-viewport::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--surface2) 70%, transparent);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+
+.overlay {
+  position: absolute;
+  inset: 10px 14px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--crust) 72%, transparent);
+  backdrop-filter: blur(6px);
+  transition: opacity 180ms ease;
+  pointer-events: none;
+  opacity: 0;
+}
+.overlay.show { opacity: 1; pointer-events: auto; }
+.overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 28px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--base) 92%, transparent);
+  text-align: center;
+  min-width: 240px;
+  box-shadow: 0 20px 60px -25px rgba(0,0,0,0.6);
+}
+.overlay-icon {
+  color: var(--accent);
+  display: inline-flex;
+  width: 44px; height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  animation: spin 2.2s linear infinite;
+}
+.overlay.ready .overlay-icon { animation: none; color: var(--green); background: color-mix(in oklab, var(--green) 18%, transparent); }
+.overlay.error .overlay-icon { animation: none; color: var(--red); background: color-mix(in oklab, var(--red) 18%, transparent); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.overlay-title { font: 600 15px/1.2 "Inter", sans-serif; color: var(--text); }
+.overlay-sub { font: 400 12.5px/1.4 "Inter", sans-serif; color: var(--subtext); max-width: 320px; }
+
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-top: 1px solid var(--border);
+  background: color-mix(in oklab, var(--mantle) 85%, transparent);
+  font: 400 12px/1 "Inter", sans-serif;
+  color: var(--subtext);
+}
+.status .grow { flex: 1; }
+.status .sep { color: var(--overlay0); }
+.status code { font: 500 11.5px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--sapphire); }
+.status .hint { color: var(--overlay1); }
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--overlay0);
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+.dot.connecting { background: var(--yellow); box-shadow: 0 0 0 4px color-mix(in oklab, var(--yellow) 18%, transparent); animation: pulse 1.2s ease-in-out infinite; }
+.dot.ready { background: var(--green); box-shadow: 0 0 0 4px color-mix(in oklab, var(--green) 18%, transparent); }
+.dot.error { background: var(--red); box-shadow: 0 0 0 4px color-mix(in oklab, var(--red) 18%, transparent); }
+
+
+@media (max-width: 720px) {
+  .bar { flex-wrap: wrap; }
+  .actions { order: 3; width: 100%; justify-content: flex-end; }
+  .btn span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
